@@ -42,10 +42,17 @@ repositories {
         dirs 'libs'
     }
 }
+
+greendao {
+    schemaVersion 1
+    daoPackage 'mallcollection.joinearn.com.mymall.model.gen'
+    targetGenDir 'src/main/java/model.db'
+}
 dependencies {
+    compile 'cn.trinea.android.common:trinea-android-common:4.2.15'
     compile 'com.alibaba:fastjson:1.2.36'
     compile 'com.alibaba:fastjson:1.1.61.android'
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.lzy.net:okgo:3.0.4'
     compile 'org.greenrobot:greendao:3.2.2'
     compile 'com.roughike:bottom-bar:2.3.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')

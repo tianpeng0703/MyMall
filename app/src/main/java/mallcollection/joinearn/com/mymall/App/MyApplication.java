@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
 import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
 import com.alibaba.baichuan.trade.common.adapter.ut.AlibcUserTracker;
+import com.lzy.okgo.OkGo;
 import com.ut.mini.internal.UTTeamWork;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
+        OkGo.getInstance().init(this);
         //电商SDK初始化
         AlibcTradeSDK.asyncInit(this, new AlibcTradeInitCallback() {
             @Override
@@ -42,5 +44,9 @@ public class MyApplication extends Application {
                 Toast.makeText(application, "初始化失败,错误码="+code+" / 错误消息="+msg, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static Application getInstance(){
+        return application;
     }
 }

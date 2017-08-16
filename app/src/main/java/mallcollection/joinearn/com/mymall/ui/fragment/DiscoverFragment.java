@@ -1,7 +1,12 @@
 package mallcollection.joinearn.com.mymall.ui.fragment;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.TextView;
+
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.BitmapCallback;
+import com.lzy.okgo.model.Response;
 
 import mallcollection.joinearn.com.mymall.R;
 
