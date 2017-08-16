@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_dress"
+        icon="@drawable/ic_dress"
+        title="时尚" />
+    <tab
+        id="@+id/tab_discover"
+        icon="@drawable/ic_discover"
+        title="发现" />
+    <tab
+        id="@+id/tab_brand"
+        icon="@drawable/ic_brand"
+        title="品牌" />
+    <tab
+        id="@+id/tab_mine"
+        icon="@drawable/ic_mine"
+        title="我的" />
+</tabs>
