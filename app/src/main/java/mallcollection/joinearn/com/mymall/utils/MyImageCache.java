@@ -1,6 +1,7 @@
 package mallcollection.joinearn.com.mymall.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +10,8 @@ import cn.trinea.android.common.entity.FailedReason;
 import cn.trinea.android.common.service.impl.ImageCache;
 import cn.trinea.android.common.service.impl.ImageMemoryCache;
 import cn.trinea.android.common.util.CacheManager;
+import mallcollection.joinearn.com.mymall.App.MyApplication;
+import mallcollection.joinearn.com.mymall.R;
 
 /**
  * Created by Tianpeng on 2017-08-16.
@@ -34,7 +37,7 @@ public class MyImageCache {
             public void onGetSuccess(String imageUrl, Bitmap loadedImage, View view, boolean isInCache) {
                 // can be another view child, like textView and so on
                 if (view != null && loadedImage != null && view instanceof ImageView) {
-                    if(view.getTag() != null && !view.getTag().equals(imageUrl)) return;
+//                    if(view.getTag() != null && !view.getTag().equals(imageUrl)) return;
                         ImageView imageView = (ImageView) view;
                         imageView.setImageBitmap(loadedImage);
                 }
@@ -45,14 +48,17 @@ public class MyImageCache {
             public void onGetFailed(String imageUrl, Bitmap loadedImage, View view, FailedReason failedReason) {
                 Log.e(TAG, new StringBuilder(128).append("get image ").append(imageUrl).append(" error")
                         .toString());
+
+                ImageView imageView = (ImageView) view;
+                imageView.setImageResource(R.drawable.ic_img_failed);
                 //TODO 设图片显示加载失败图片
             }
 
             @Override
             public void onGetNotInCache(String imageUrl, View view) {
-
             }
         };
         IMAGE_CACHE.setOnImageCallbackListener(imageCallBack);
+        IMAGE_CACHE.setCacheFolder("/sdcard/brand");
     }
 }

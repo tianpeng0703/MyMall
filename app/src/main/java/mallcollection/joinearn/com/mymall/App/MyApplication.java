@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.alibaba.baichuan.android.trade.AlibcTradeSDK;
 import com.alibaba.baichuan.android.trade.callback.AlibcTradeInitCallback;
 import com.alibaba.baichuan.trade.common.adapter.ut.AlibcUserTracker;
+import com.facebook.stetho.Stetho;
 import com.lzy.okgo.OkGo;
 import com.ut.mini.internal.UTTeamWork;
 
@@ -24,6 +25,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
+        Stetho.initializeWithDefaults(this);
         OkGo.getInstance().init(this);
         //电商SDK初始化
         AlibcTradeSDK.asyncInit(this, new AlibcTradeInitCallback() {

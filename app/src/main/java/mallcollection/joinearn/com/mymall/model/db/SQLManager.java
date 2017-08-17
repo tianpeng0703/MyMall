@@ -1,6 +1,16 @@
 package mallcollection.joinearn.com.mymall.model.db;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+
+import org.greenrobot.greendao.database.Database;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import mallcollection.joinearn.com.mymall.App.MyApplication;
 import mallcollection.joinearn.com.mymall.model.gen.DaoMaster;
@@ -19,6 +29,7 @@ public class SQLManager {
     private static SQLManager mSqlManager;
 
     private SQLManager(){
+        mHelper = new DaoMaster.DevOpenHelper(MyApplication.getInstance(), dbName, null);
         getDaoMaster();
         getDaoSession();
     }

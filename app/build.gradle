@@ -49,6 +49,8 @@ greendao {
     targetGenDir 'src/main/java/model.db'
 }
 dependencies {
+    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    compile 'com.facebook.stetho:stetho:1.4.2'
     compile 'cn.trinea.android.common:trinea-android-common:4.2.15'
     compile 'com.alibaba:fastjson:1.2.36'
     compile 'com.alibaba:fastjson:1.1.61.android'
