@@ -9,6 +9,10 @@
         icon="@drawable/ic_discover"
         title="发现" />
     <tab
+        id="@+id/tab_token"
+        icon="@drawable/ic_img_token"
+        title="超级券" />
+    <tab
         id="@+id/tab_brand"
         icon="@drawable/ic_brand"
         title="品牌" />

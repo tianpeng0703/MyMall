@@ -5,6 +5,6 @@ package mallcollection.joinearn.com.mymall.App;
  */
 
 public class ApiConstant {
-    public static final String SERVER_URL = "http://www.jilun.net/index.php";
-    public static final String GET_BRAND_LIST = SERVER_URL + "bottom";
+    public static final String SERVER_URL = "http://www.jilun.net/index.php/";
+    public static final String GET_BRAND_LIST = SERVER_URL + "mall/getbrands";
 }

@@ -1,13 +1,16 @@
 package mallcollection.joinearn.com.mymall.ui.activity;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.roughike.bottombar.BottomBar;
@@ -19,6 +22,7 @@ import mallcollection.joinearn.com.mymall.ui.fragment.BrandFragment;
 import mallcollection.joinearn.com.mymall.ui.fragment.DiscoverFragment;
 import mallcollection.joinearn.com.mymall.ui.fragment.DressFragment;
 import mallcollection.joinearn.com.mymall.ui.fragment.MineFragment;
+import mallcollection.joinearn.com.mymall.ui.fragment.TokenFragment;
 
 /**
  * Created by Tianpeng on 2017-08-15.
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DressFragment mDressFragment;
     private DiscoverFragment mDiscoverFragment;
+    private TokenFragment mTokenFragment;
     private BrandFragment mBrandFragment;
     private MineFragment mMineFragment;
     private FrameLayout mContainer;
@@ -40,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
 
         mFm = getSupportFragmentManager();
 
@@ -52,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         showFragment(mDressFragment);
 
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        bottomBar.setActiveTabColor(ContextCompat.getColor(this, R.color.bottomBar));
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -67,6 +76,12 @@ public class MainActivity extends AppCompatActivity {
                             mDiscoverFragment = new DiscoverFragment();
                         }
                         showFragment(mDiscoverFragment);
+                        break;
+                    case R.id.tab_token:
+                        if(mTokenFragment == null){
+                            mTokenFragment = new TokenFragment();
+                        }
+                        showFragment(mTokenFragment);
                         break;
                     case R.id.tab_dress:
                         if(mDressFragment == null) {

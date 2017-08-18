@@ -70,8 +70,12 @@ public class BrandFragment extends BaseFragment {
         mAdapter.setData(mDataList);
     }
 
+    /**
+     * 获取服务器上面的 id大于brand_id的20条数据；
+     * @param addToBottom  是否追加在结尾，true 上拉的时候调用，结果追加到list结尾； false 下拉的时候调用，结果添加到顶部
+     */
     private void requestData(final boolean addToBottom){
-        OkGo.<String>get(ApiConstant.GET_BRAND_LIST+"?id = "+ SPUtil.getInt("brand_id", -1))
+        OkGo.<String>get(ApiConstant.GET_BRAND_LIST+"?brand_id="+ SPUtil.getInt("brand_id", 0))
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
@@ -80,8 +84,10 @@ public class BrandFragment extends BaseFragment {
                             JSONObject json = JSON.parseObject(res);
                             if("OK".equals(json.getString("errmsg"))){
                                 List<Brand> list = null;
+                                JSONObject info = json.getJSONObject("info");
                                 try {
-                                    list = JSONObject.parseArray(json.getString("info"), Brand.class);
+                                    SPUtil.put("brand_id", info.getIntValue("brand_id"));
+                                    list = JSONObject.parseArray(info.getString("list"), Brand.class);
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
@@ -142,14 +148,13 @@ public class BrandFragment extends BaseFragment {
             @Override
             public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
                 super.onLoadMore(refreshLayout);
-                requestData(true);
+                requestData(false);
             }
 
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 super.onRefresh(refreshLayout);
-
-                requestData(false);
+                requestData(true);
             }
         });
     }
