@@ -48,4 +48,10 @@ public class BrandDbManager {
         list = getDao().queryBuilder().where(new WhereCondition.StringCondition("_Id>"+id+" limit 20")).list();
         return list;
     }
+    //获取id在某个范围的数据
+    public List<Brand> getBrandList(int bottomId, int topId){
+        List<Brand> list = null;
+        list = getDao().queryBuilder().where(new WhereCondition.StringCondition("_Id>="+bottomId+" AND _Id<"+topId)).list();
+        return list;
+    }
 }

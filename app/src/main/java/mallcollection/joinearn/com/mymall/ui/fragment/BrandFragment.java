@@ -40,6 +40,9 @@ public class BrandFragment extends BaseFragment {
     private BrandAdapter mAdapter;
     private List<Brand> mDataList;
     private TwinklingRefreshLayout mRefreshLayout;
+    private int mTopIndex = 0;
+    private int mBottomIndex = 0;
+    private boolean isNoMore = false;
     @Override
     protected String getTitle() {
         return "品牌";
@@ -66,7 +69,51 @@ public class BrandFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        mDataList = BrandDbManager.getInstance().getBrandList(-1);
+        SPUtil.put("brand_id", 70);
+        mTopIndex = SPUtil.getInt("brand_id", 0);
+        mBottomIndex = mTopIndex -20;
+        mDataList = new ArrayList<Brand>();
+        loadTopDataFromDatabase(mTopIndex);
+    }
+
+    //从数据库加载最新的20条数据
+    private void loadTopDataFromDatabase(int topIndex){
+        List<Brand> list = BrandDbManager.getInstance().getBrandList(topIndex);
+        for(Brand brand : list){
+            mDataList.add(0, brand);
+            if((int)brand.getId() < mBottomIndex){
+                mBottomIndex = (int)brand.getId();
+            }
+        }
+        if(mBottomIndex <= 0){
+            isNoMore = true;
+        }
+        mAdapter.setData(mDataList);
+    }
+
+    //从数据库加载20条新数据
+    private void loadDataFromDatabase(){
+        if(!isNoMore) {
+            if(mBottomIndex <= 0){
+                isNoMore = true;
+            }
+            List<Brand> list = BrandDbManager.getInstance().getBrandList(mBottomIndex -20, mBottomIndex);
+            if (list != null) {
+                int id = mBottomIndex;
+                for (Brand brand : list) {
+                    if (brand.getId() < mBottomIndex) {
+                        mBottomIndex = (int) brand.getId();
+                    }
+                    if (mBottomIndex < 0) {
+                        mBottomIndex = 0;
+                    }
+                    mDataList.add(brand);
+                }
+            }
+        }else {
+            ToastUitl.showShort("没有更多数据");
+        }
+        stopRefresh(true);
         mAdapter.setData(mDataList);
     }
 
@@ -75,60 +122,63 @@ public class BrandFragment extends BaseFragment {
      * @param addToBottom  是否追加在结尾，true 上拉的时候调用，结果追加到list结尾； false 下拉的时候调用，结果添加到顶部
      */
     private void requestData(final boolean addToBottom){
-        OkGo.<String>get(ApiConstant.GET_BRAND_LIST+"?brand_id="+ SPUtil.getInt("brand_id", 0))
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(Response<String> response) {
-                        String res = response.body().toString();
-                        if(!TextUtils.isEmpty(res)){
-                            JSONObject json = JSON.parseObject(res);
-                            if("OK".equals(json.getString("errmsg"))){
-                                List<Brand> list = null;
-                                JSONObject info = json.getJSONObject("info");
-                                try {
-                                    SPUtil.put("brand_id", info.getIntValue("brand_id"));
-                                    list = JSONObject.parseArray(info.getString("list"), Brand.class);
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-                                BrandDbManager.getInstance().insertBrandList(list);
-                                if(mDataList == null){
-                                    mDataList = new ArrayList<Brand>();
-                                }
-                                for(Brand brand: list){
-                                    if(addToBottom){
-                                        mDataList.add(brand);
-                                    }else{
-                                        mDataList.add(0, brand);
+        if(addToBottom){
+            loadDataFromDatabase();
+        }else {
+            OkGo.<String>get(ApiConstant.GET_BRAND_LIST + "?brand_id=" + mTopIndex)
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onSuccess(Response<String> response) {
+                            String res = response.body().toString();
+                            if (!TextUtils.isEmpty(res)) {
+                                JSONObject json = JSON.parseObject(res);
+                                if ("OK".equals(json.getString("errmsg"))) {
+                                    List<Brand> list = null;
+                                    JSONObject info = json.getJSONObject("info");
+                                    try {
+                                        SPUtil.put("brand_id", info.getIntValue("brand_id"));
+                                        mTopIndex = info.getIntValue("brand_id");
+                                        list = JSONObject.parseArray(info.getString("list"), Brand.class);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                }
-                                if(addToBottom){
-                                    mRefreshLayout.finishLoadmore();
-                                }else{
-                                    mRefreshLayout.finishRefreshing();
-                                }
-                            }else {
-                                ToastUitl.showShort(json.getString("errmsg"));
-                                if(addToBottom){
-                                    mRefreshLayout.finishLoadmore();
-                                }else{
-                                    mRefreshLayout.finishRefreshing();
+                                    BrandDbManager.getInstance().insertBrandList(list);
+                                    if (mDataList == null) {
+                                        mDataList = new ArrayList<Brand>();
+                                    }
+                                    for (Brand brand : list) {
+                                        if (addToBottom) {
+                                            mDataList.add(brand);
+                                        } else {
+                                            mDataList.add(0, brand);
+                                        }
+                                    }
+                                    mAdapter.setData(mDataList);
+                                    stopRefresh(addToBottom);
+                                } else {
+                                    ToastUitl.showShort(json.getString("errmsg"));
+                                    stopRefresh(addToBottom);
                                 }
                             }
                         }
-                    }
 
-                    @Override
-                    public void onError(Response<String> response) {
-                        super.onError(response);
-                        ToastUitl.showShort("连接服务器失败");
-                        if(addToBottom){
-                            mRefreshLayout.finishLoadmore();
-                        }else{
-                            mRefreshLayout.finishRefreshing();
+                        @Override
+                        public void onError(Response<String> response) {
+                            super.onError(response);
+                            ToastUitl.showShort("连接服务器失败");
+                            stopRefresh(addToBottom);
                         }
-                    }
-                });
+                    });
+        }
+    }
+
+    private void stopRefresh(boolean addToBottom){
+
+        if(addToBottom){
+            mRefreshLayout.finishLoadmore();
+        }else{
+            mRefreshLayout.finishRefreshing();
+        }
     }
 
     @Override
@@ -148,13 +198,14 @@ public class BrandFragment extends BaseFragment {
             @Override
             public void onLoadMore(TwinklingRefreshLayout refreshLayout) {
                 super.onLoadMore(refreshLayout);
-                requestData(false);
+                requestData(true);
+
             }
 
             @Override
             public void onRefresh(TwinklingRefreshLayout refreshLayout) {
                 super.onRefresh(refreshLayout);
-                requestData(true);
+                requestData(false);
             }
         });
     }

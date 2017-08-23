@@ -17,7 +17,7 @@
             android:id="@+id/brand_detail_icon"
             android:maxHeight="100dp"
             android:layout_margin="20dp"
-            android:src="@drawable/ic_img_loading"/>
+            android:src="@drawable/ic_loading"/>
 
         <TextView
             android:background="@color/halfgrey"
@@ -157,6 +157,7 @@
             <TextView
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:layout_marginBottom="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/brand_detail_desc"/>

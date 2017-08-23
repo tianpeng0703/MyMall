@@ -6,7 +6,7 @@
     android:background="@drawable/brand_item_selector">
 
     <ImageView
-        android:src="@drawable/ic_img_loading"
+        android:src="@drawable/ic_loading"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:minHeight="50dp"

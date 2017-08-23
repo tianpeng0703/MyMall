@@ -50,7 +50,7 @@ public class MyImageCache {
                         .toString());
 
                 ImageView imageView = (ImageView) view;
-                imageView.setImageResource(R.drawable.ic_img_failed);
+                imageView.setImageResource(R.drawable.ic_load_failed);
                 //TODO 设图片显示加载失败图片
             }
 
